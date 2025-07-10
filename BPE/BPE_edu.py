@@ -42,4 +42,44 @@ class BPETokenizer:
         self.vocab_to_id = {char: idx for idx, char in enumerate(self.vocab)}
         self.id_to_vocab = {idx: char for idx, char in enumerate(self.vocab)}
 
-        print(f"Initial vocabulary size: {s}")
+        print(f"Initial vocabulary size: {self.original_vocab_length}")
+        print(f"First 5 vocab items: {self.vocab[:5]}")
+
+    def _find_most_frequent_pair(self, data):
+        """
+        Find the most frequent consecutive pair in the data.
+        
+        Args:
+            data (list): List of tokens/characters
+            
+        Returns:
+            dict: Frequency distribution of pairs
+        """
+        if len(data < 2):
+            return {}
+        
+        freq_dist = {}
+        for i in range(len(data) - 1):
+            pair = (data[i], data[i + 1])
+            freq_dist[pair] = freq_dist.get(pair, 0) + 1
+
+        return freq_dist
+    
+    def _merge_tokens(self, token1, token2, data):
+        """
+        Merge consecutive occurrences of token1 and token2 in the data.
+        
+        Args:
+            token1 (str): First token to merge
+            token2 (str): Second token to merge
+            data (list): List of tokens
+            
+        Returns:
+            list: Data with merged tokens
+        """
+        merged_data = []
+        i = 0
+
+        while i < len(data):
+            if i < len(data) - 1 and data[i] == token1 and data[i + 1] == token2:
+                merged_data.append(token1 + token2)
